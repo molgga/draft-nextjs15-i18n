@@ -1,7 +1,7 @@
 'use client';
 
 import { useAppConfigContext } from '@/features/app/context/use-app-config-context';
-import { BrowserCookie } from '@jood/helpdesk-module/browser-cookie';
+import { toWithoutLangPathname } from '@/features/lang/utils/to-without-lang-pathname';
 import { usePathname } from 'next/navigation';
 
 export function Footer() {
@@ -10,10 +10,7 @@ export function Footer() {
 
   const handleLocaleChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
     const lang = evt.target.value;
-    const CookeyKey = Object.freeze({ Lang: 'NEXT_LOCALE' });
-    const cookie = new BrowserCookie();
-    cookie.set({ name: CookeyKey.Lang, value: lang });
-    const withoutLangPath = pathname.replace(/^\/(en|ko|ja)/, '');
+    const withoutLangPath = toWithoutLangPathname(pathname);
     location.href = `/${lang}${withoutLangPath}`;
   };
 

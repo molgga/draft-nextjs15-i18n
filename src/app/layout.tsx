@@ -1,7 +1,8 @@
+import { getServerLangByCookie } from '@/features/lang/server/get-server-lang-by-cookie';
 import { Footer } from '@/features/layout/ui/footer';
 import { AppConfigProvider } from '@/providers/app-config-provider';
 import type { Metadata } from 'next';
-import { cookies, headers } from 'next/headers';
+import { headers } from 'next/headers';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -15,9 +16,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const headersList = await headers();
-  const cookie = await cookies();
   const userAgent = headersList.get('user-agent');
-  const lang = cookie.get('NEXT_LOCALE')?.value || 'en';
+  const lang = await getServerLangByCookie();
 
   return (
     <html lang="en">
