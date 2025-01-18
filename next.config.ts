@@ -1,7 +1,10 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // i18n: {
+  //   locales: ['default', 'ko', 'en'],
+  //   defaultLocale: 'default',
+  // },
 };
 
 export default nextConfig;
