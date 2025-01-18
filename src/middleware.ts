@@ -21,6 +21,10 @@ function getLocale(request: NextRequest): LocaleVo {
   // 헤더 accept-language
   const acceptedLanguages = request.headers.get('accept-language') || 'en';
   const settingCookieLang = request.cookies.get(CookeyKey.Lang)?.value;
+
+  console.log('acceptedLanguages', acceptedLanguages);
+  console.log('settingCookieLang', settingCookieLang);
+
   if (settingCookieLang) {
     const locale = LocaleConfig.Locales.find(
       (code) => code === settingCookieLang
@@ -51,7 +55,7 @@ function getLocale(request: NextRequest): LocaleVo {
  * API 에서도 accept-language 헤더 등으로 언어셋을 알 수 있지만
  * 클라이언트에서 en 사용자가 ko 로 언어변경을 해서 사용하고 있다면 ko 언어로 내려줘야한다.
  */
-function setCookieLang(response: NextResponse, { lang }: LocaleVo) {
+function setCookieLang(response: NextResponse, { lang }: { lang: string }) {
   response.cookies.set(CookeyKey.Lang, lang);
 }
 
@@ -66,15 +70,18 @@ export function middleware(request: NextRequest) {
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
+  console.log('pathLocale', pathLocale);
+  console.log('lang, locale', lang, locale);
+
   if (pathLocale) {
     const response = NextResponse.next();
-    setCookieLang(response, { lang, locale });
+    setCookieLang(response, { lang: pathLocale });
     return response;
   }
 
   request.nextUrl.pathname = `/${lang}${pathname}`;
   const response = NextResponse.redirect(request.nextUrl);
-  setCookieLang(response, { lang, locale });
+  setCookieLang(response, { lang });
   return response;
 }
 

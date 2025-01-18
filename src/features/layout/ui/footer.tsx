@@ -1,9 +1,11 @@
 'use client';
 
+import { useAppConfigContext } from '@/features/app/context/use-app-config-context';
 import { BrowserCookie } from '@jood/helpdesk-module/browser-cookie';
 import { usePathname } from 'next/navigation';
 
 export function Footer() {
+  const appConfig = useAppConfigContext();
   const pathname = usePathname();
 
   const handleLocaleChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
@@ -17,7 +19,7 @@ export function Footer() {
 
   return (
     <div>
-      <select onChange={handleLocaleChange}>
+      <select value={appConfig.lang} onChange={handleLocaleChange}>
         <option value="en">en</option>
         <option value="ko">ko</option>
         <option value="ja">ja</option>
