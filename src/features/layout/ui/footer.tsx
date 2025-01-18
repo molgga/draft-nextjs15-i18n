@@ -10,7 +10,7 @@ export function Footer() {
 
   const handleLocaleChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
     const lang = evt.target.value;
-    const CookeyKey = Object.freeze({ Lang: 'fe-lang' });
+    const CookeyKey = Object.freeze({ Lang: 'NEXT_LOCALE' });
     const cookie = new BrowserCookie();
     cookie.set({ name: CookeyKey.Lang, value: lang });
     const withoutLangPath = pathname.replace(/^\/(en|ko|ja)/, '');

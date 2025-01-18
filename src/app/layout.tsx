@@ -17,7 +17,7 @@ export default async function RootLayout({
   const headersList = await headers();
   const cookie = await cookies();
   const userAgent = headersList.get('user-agent');
-  const lang = cookie.get('fe-lang')?.value || 'en';
+  const lang = cookie.get('NEXT_LOCALE')?.value || 'en';
 
   return (
     <html lang="en">

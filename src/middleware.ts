@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import createMiddleware from 'next-intl/middleware';
+import { routing } from './i18n/routing';
 
 const LocaleConfig = Object.freeze({
   Locales: ['en', 'ko', 'ja'],
@@ -6,7 +8,7 @@ const LocaleConfig = Object.freeze({
 });
 
 const CookeyKey = Object.freeze({
-  Lang: 'fe-lang',
+  Lang: 'NEXT_LOCALE',
 });
 
 interface LocaleVo {
@@ -50,14 +52,7 @@ function getLocale(request: NextRequest): LocaleVo {
   };
 }
 
-/**
- * API 에서는 클라이언트의 셋팅된 언어가 필요하기 때문에 쿠키에 심어둔다.
- * API 에서도 accept-language 헤더 등으로 언어셋을 알 수 있지만
- * 클라이언트에서 en 사용자가 ko 로 언어변경을 해서 사용하고 있다면 ko 언어로 내려줘야한다.
- */
-function setCookieLang(response: NextResponse, { lang }: { lang: string }) {
-  response.cookies.set(CookeyKey.Lang, lang);
-}
+const i18nMiddleware = createMiddleware(routing);
 
 /**
  * 언어셋 미들웨어
@@ -74,14 +69,13 @@ export function middleware(request: NextRequest) {
   console.log('lang, locale', lang, locale);
 
   if (pathLocale) {
-    const response = NextResponse.next();
-    setCookieLang(response, { lang: pathLocale });
+    // const response = NextResponse.next();
+    const response = i18nMiddleware(request);
     return response;
   }
 
   request.nextUrl.pathname = `/${lang}${pathname}`;
   const response = NextResponse.redirect(request.nextUrl);
-  setCookieLang(response, { lang });
   return response;
 }
 
