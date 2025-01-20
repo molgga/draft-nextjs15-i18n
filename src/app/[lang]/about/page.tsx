@@ -18,11 +18,9 @@ export default async function Page({
 
 function About() {
   const tNavi = useTranslations('Navi');
-
   return (
     <>
-      <h3>네비_홈: {tNavi('네비_홈')}</h3>
-      <h3>네비_소개: {tNavi('네비_소개')}</h3>
+      <h3>i18n 출력 테스트: {tNavi('네비_소개')}</h3>
     </>
   );
 }
