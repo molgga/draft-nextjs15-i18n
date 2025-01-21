@@ -1,7 +1,8 @@
-import { getServerLangByCookie } from '@/features/lang/server/get-server-lang-by-cookie';
 import { Footer } from '@/features/layout/ui/footer';
 import { AppConfigProvider } from '@/providers/app-config-provider';
 import type { Metadata } from 'next';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 import { headers } from 'next/headers';
 import Link from 'next/link';
 
@@ -17,25 +18,28 @@ export default async function RootLayout({
 }>) {
   const headersList = await headers();
   const userAgent = headersList.get('user-agent');
-  const lang = await getServerLangByCookie();
+  const i18nMessages = await getMessages();
+  const i18nLocale = await getLocale();
 
   return (
-    <html lang="en">
+    <html lang={i18nLocale}>
       <body>
-        <AppConfigProvider lang={lang} userAgent={userAgent || ''}>
-          <nav>
-            <Link prefetch={false} href="/">
-              HOME
-            </Link>{' '}
-            &nbsp;
-            <Link prefetch={false} href="/about">
-              ABOUT
-            </Link>{' '}
-            &nbsp;
-          </nav>
-          <div>{children}</div>
-          <Footer />
-        </AppConfigProvider>
+        <NextIntlClientProvider messages={i18nMessages}>
+          <AppConfigProvider userAgent={userAgent || ''}>
+            <nav>
+              <Link prefetch={false} href="/">
+                HOME
+              </Link>{' '}
+              &nbsp;
+              <Link prefetch={false} href="/about">
+                ABOUT
+              </Link>{' '}
+              &nbsp;
+            </nav>
+            <div>{children}</div>
+            <Footer />
+          </AppConfigProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getServerLangByCookie } from '@/features/lang/server/get-server-lang-by-cookie';
+import { getServerLocaleByCookie } from '@/features/locale/server/get-server-locale-by-cookie';
 
 export async function GET() {
-  const lang = await getServerLangByCookie();
+  const locale = await getServerLocaleByCookie();
   return NextResponse.json({
-    lang,
+    locale,
     foo: 1,
     at: Date.now(),
   });

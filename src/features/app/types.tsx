@@ -8,7 +8,6 @@ export interface NextPageProps {
 }
 
 export interface AppConfig {
-  lang: string;
   isApp: boolean;
   isAOS: boolean;
   isIOS: boolean;

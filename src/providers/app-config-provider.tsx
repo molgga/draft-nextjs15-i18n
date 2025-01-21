@@ -5,14 +5,12 @@ import * as agentParser from '@/features/app//util/agent-parser';
 import { AppConfig } from '@/features/app/types';
 
 interface Props extends PropsWithChildren {
-  lang: string;
   userAgent: string;
 }
 
-export function AppConfigProvider({ lang, userAgent, children }: Props) {
+export function AppConfigProvider({ userAgent, children }: Props) {
   const matchApp = agentParser.parseApp(userAgent);
   const appConfig: AppConfig = {
-    lang,
     isApp: matchApp.is,
     isAOS: agentParser.parsePlatformAOS(userAgent).is,
     isIOS: agentParser.parsePlatformIOS(userAgent).is,
@@ -24,7 +22,6 @@ export function AppConfigProvider({ lang, userAgent, children }: Props) {
       {children}
       <br />
       <div data-app-config-ua="" className="hidden break-all">
-        <div>lang: {lang}</div>
         <div>userAgent: {userAgent}</div>
         <div>{JSON.stringify(appConfig)}</div>
       </div>

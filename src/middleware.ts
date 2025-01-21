@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
 import {
-  LocaleConfigLangCookieKey,
+  LocaleConfigCookieKey,
   LocaleConfigDefault,
-  LocaleConfigLangs,
+  LocaleConfigLocales,
   LocaleVo,
-} from '@/features/lang/types';
+} from '@/features/locale/types';
 
 const i18nMiddleware = createMiddleware(routing);
 
@@ -16,27 +16,31 @@ const i18nMiddleware = createMiddleware(routing);
 function getLocale(request: NextRequest): LocaleVo {
   // 헤더 accept-language
   const acceptedLanguages = request.headers.get('accept-language') || 'en';
-  const cookieLang = request.cookies.get(LocaleConfigLangCookieKey)?.value;
+  const cookieLocale = request.cookies.get(LocaleConfigCookieKey)?.value;
   console.log('acceptedLanguages', acceptedLanguages);
-  console.log('cookieLang', cookieLang);
-  if (cookieLang) {
-    const locale = LocaleConfigLangs.find((code) => code === cookieLang);
-    if (locale) {
-      return { locale, lang: locale.split('-')[0] };
+  console.log('cookieLocale', cookieLocale);
+  if (cookieLocale) {
+    const localeFull = LocaleConfigLocales.find(
+      (code) => code === cookieLocale
+    );
+    if (localeFull) {
+      return { localeFull, locale: localeFull.split('-')[0] };
     }
   }
 
   if (acceptedLanguages) {
-    const langCodes = acceptedLanguages.split(',').map((v) => v.split('-')[0]); // 헤더 값에서 언어 코드만 ['en-US'] > ['en']
-    const locale = langCodes.find((code) => LocaleConfigLangs.includes(code)); // locale 찾기
-    if (locale) {
-      return { locale, lang: locale.split('-')[0] };
+    const locales = acceptedLanguages.split(',').map((v) => v.split('-')[0]); // 헤더 값에서 언어 코드만 ['en-US'] > ['en']
+    const localeFull = locales.find((code) =>
+      LocaleConfigLocales.includes(code)
+    ); // locale 찾기
+    if (localeFull) {
+      return { localeFull, locale: localeFull.split('-')[0] };
     }
   }
   // 지원하는 언어셋 없다면 기본 언어
   return {
-    locale: LocaleConfigDefault,
-    lang: LocaleConfigDefault.split('-')[0],
+    localeFull: LocaleConfigDefault,
+    locale: LocaleConfigDefault.split('-')[0],
   };
 }
 
@@ -45,18 +49,16 @@ function getLocale(request: NextRequest): LocaleVo {
  */
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const { lang } = getLocale(request);
+  const { locale } = getLocale(request);
 
-  const pathLocale = LocaleConfigLangs.find(
+  const pathLocale = LocaleConfigLocales.find(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
-  // console.log('pathLocale', pathLocale);
-  // console.log('lang, locale', lang, locale);
+  console.log('pathLocale', pathLocale);
   if (pathLocale) {
-    // const response = NextResponse.next();
     return i18nMiddleware(request);
   }
-  request.nextUrl.pathname = `/${lang}${pathname}`;
+  request.nextUrl.pathname = `/${locale}${pathname}`;
   return NextResponse.redirect(request.nextUrl);
 }
 

@@ -1,22 +1,21 @@
 'use client';
-
-import { useAppConfigContext } from '@/features/app/context/use-app-config-context';
-import { toWithoutLangPathname } from '@/features/lang/utils/to-without-lang-pathname';
+import { toWithoutLocalePathname } from '@/features/locale/utils/to-without-locale-pathname';
+import { useLocale } from 'next-intl';
 import { usePathname } from 'next/navigation';
 
 export function Footer() {
-  const appConfig = useAppConfigContext();
+  const ttLocale = useLocale();
   const pathname = usePathname();
 
   const handleLocaleChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
-    const lang = evt.target.value;
-    const withoutLangPath = toWithoutLangPathname(pathname);
-    location.href = `/${lang}${withoutLangPath}`;
+    const locale = evt.target.value;
+    const withoutLangPath = toWithoutLocalePathname(pathname);
+    location.href = `/${locale}${withoutLangPath}`;
   };
 
   return (
     <div>
-      <select value={appConfig.lang} onChange={handleLocaleChange}>
+      <select value={ttLocale} onChange={handleLocaleChange}>
         <option value="en">en</option>
         <option value="ko">ko</option>
         <option value="ja">ja</option>

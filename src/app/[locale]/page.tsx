@@ -3,13 +3,13 @@ import { useTranslations } from 'next-intl';
 export default async function Page({
   params,
 }: {
-  params: Promise<{ lang: string }>;
+  params: Promise<{ locale: string }>;
 }) {
-  const lang = (await params).lang;
+  const locale = (await params).locale;
   return (
     <div>
       <div>home</div>
-      <div>lang: {lang}</div>
+      <div>locale: {locale}</div>
       <br />
       <Home />
     </div>
